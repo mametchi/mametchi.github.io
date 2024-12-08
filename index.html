@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Mametchi! 2.0 - Coming Soon</title>
+  <style>
+    body {
+      background-color: black;
+      color: #FfF; 
+      font-family: monospace;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      overflow: hidden;
+    }
+
+    .image-clip {
+  overflow: hidden;
+}
+
+.image-clip img {
+  display: block; 
+  margin-bottom: -2px; 
+}
+
+    .container {
+      text-align: center;
+      width: 80%;
+      max-width: 800px; 
+      border: 2px solid #FfF;
+      padding: 20px;
+      box-shadow: 0 0 10px #FfF;
+    }
+    .blinking-cursor {
+      font-weight: 100;
+      font-size: 30px;
+      color: #2E3D48;
+      display: inline-block; 
+      width: 0;
+      overflow: hidden;
+    }
+    @keyframes blink {
+      from, to {
+        color: transparent;
+      }
+      50% {
+        color: #FfF;
+      }
+    }
+
+    h1 {
+      font-size: 2em;
+      margin-bottom: 0.5em;
+    }
+
+    p {
+      font-size: 1.2em;
+      line-height: 1.5;
+      margin-bottom: 1em;
+    }
+
+    a {
+      color: #FfF;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .links {
+      margin-top: 2em;
+      display: flex;
+      justify-content: space-around;
+    }
+
+    .scanlines {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: repeating-linear-gradient(
+        to bottom,
+        rgba(255, 255, 255, 0.05) 0,
+        rgba(255, 255, 255, 0.05) 1px,
+        transparent 1px,
+        transparent 2px
+      );
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    .logo-container {
+      animation: fadeInOut 4s infinite;
+      
+    }
+
+    img {
+      max-width: 100%;
+      height: auto;
+      margin: 10px 0;
+      opacity: 1;
+      
+    }
+
+    .logo-container img {
+      animation: flicker 3s infinite alternate;
+    }
+
+    @keyframes fadeInOut {
+      0%    { opacity: 0; }
+      25%   { opacity: 1; }
+      75%   { opacity: 1; }
+      100%  { opacity: 0; }
+    }
+
+    @keyframes flicker {
+      0%, 53%, 100%{
+        filter: drop-shadow(0 0 4px #FfF) drop-shadow(0 0 11px #FfF) drop-shadow(0 0 0px #FfF);
+      }
+      20%, 24%, 55% {
+        filter: none;
+      }
+    }
+
+    .links {
+      margin-top: 2em;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+    }
+
+    .links a {
+      display: inline-block;
+      margin: 0 10px; 
+    }
+
+    .links img {
+      max-width: 50px; 
+      height: 50px;
+      vertical-align: middle; 
+    }
+
+    .hidden {
+        display: none;
+    }
+    #delayed-content p {
+      overflow: hidden;
+      white-space: nowrap;
+      margin: 0 auto;
+      letter-spacing: 0.15em; 
+    }
+  </style>
+</head>
+<body>
+  <div class="scanlines"></div>
+  <div class="container">
+    <div class="logo-container">
+        <img src="media/logo.png" alt="Project Logo">
+    </div>
+    <p id="line1" class="hidden">> ./mametchi.sh --CA</p>
+    <div id="delayed-content">
+        <p id="line2" class="hidden">> CONTRACT ADDRESS FOUND: 0x6294C96b23b3bcE7dC792386aD0bDb65Bc8733b7</p>
+        <p id="line3" class="hidden">> 2.0 COMING SOON<span class="blinking-cursor">_</span></p>
+    </div>
+
+    <div class="links">
+      <a href="https://twitter.com/MametchiOnBase" target="_blank"><img src="media/twitter.png" alt="Twitter"></a>
+      <a href="https://t.me/MametchiOnBase" target="_blank"><img src="media/telegram.png" alt="Telegram"></a>
+      <a href="https://warpcast.com/MametchiOnBase" target="_blank"><img src="media/warpcast.png" alt="Warpcast"></a>
+      <a href="https://dexscreener.com/base/0x381f5ca12a0124d3286d1390578b757ede0bd851" target="_blank"><img src="media/dex.png" alt="Dexscreener"></a>
+    </div>
+  </div>
+
+      
+  <script>
+    window.addEventListener('load', function() {
+      const line1 = document.getElementById('line1');
+      const delayedContent = document.getElementById('delayed-content');
+      const lines = [
+        document.getElementById('line2'),
+        document.getElementById('line3')
+      ];
+      const typingSpeed = 30; 
+      const delayBetweenLines = 1000; 
+      const originalLetterSpacing = '0.15em'; 
+  
+      function typeLine(line, callback) {
+        line.classList.remove('hidden'); 
+        const text = line.textContent;
+        line.textContent = ''; 
+        line.style.letterSpacing = '0'; 
+        let i = 0;
+        const typingInterval = setInterval(function() {
+          line.textContent += text.charAt(i);
+          i++;
+          if (i === text.length) {
+            clearInterval(typingInterval);
+            line.style.letterSpacing = originalLetterSpacing;
+            if (callback) callback();
+          }
+        }, typingSpeed);
+      }
+  
+      setTimeout(function() {
+        typeLine(line1, function() {
+          setTimeout(function() {
+            typeLine(lines[0], function() {        
+              setTimeout(function() {
+                typeLine(lines[1]);
+              }, delayBetweenLines);
+            });
+          }, delayBetweenLines);
+        });
+      }, 1000);
+    });
+  </script>  
+</body>
+</html>
